@@ -1,6 +1,7 @@
 # kinetics-downloader
 
-Simple tool to download videos from [kinetics dataset](https://deepmind.com/research/open-source/open-source-datasets/kinetics/)
+Simple tool to download videos from [kinetics dataset](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
+
 Also have functionality to trim downloaded videos to the length of action. To support trimming, ffmpeg should be installed and added to environment variable PATH.
 
 ## Usage
