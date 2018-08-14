@@ -60,6 +60,9 @@ def download_clip(row, label_to_dir, trim, count):
         except KeyError:
             print('Unavailable video: ', filename)
             return
+        except:
+            print('Don\'t know why something went wrong(')
+            return
     else:
         print('Already downloaded: ', filename)
 
