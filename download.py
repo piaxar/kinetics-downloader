@@ -13,6 +13,7 @@ URL_BASE = 'https://www.youtube.com/watch?v='
 
 VIDEO_EXTENSION = '.mp4'
 VIDEO_FORMAT = 'mp4'
+TOTAL_VIDEOS = 0
 
 
 def create_file_structure(path, folders_names):
@@ -32,7 +33,7 @@ def create_file_structure(path, folders_names):
     return mapping
 
 
-def download_clip(row, label_to_dir, trim):
+def download_clip(row, label_to_dir, trim, count):
     """
     Download clip from youtube.
     row: dict-like objects with keys: ['label', 'youtube_id', 'time_start', 'time_end']
@@ -91,8 +92,12 @@ def download_clip(row, label_to_dir, trim):
                 return False
             print('Finish trimming: ', filename)
 
+    print('Processed %i out of %i' % (count + 1, TOTAL_VIDEOS))
+
 
 def main(input_csv, output_dir, trim, num_jobs):
+    global TOTAL_VIDEOS
+
     assert input_csv[-4:] == '.csv', 'Provided input is not a .csv file'
     links_df = pd.read_csv(input_csv)
     assert all(elem in REQUIRED_COLUMNS for elem in links_df.columns.values),\
@@ -104,9 +109,10 @@ def main(input_csv, output_dir, trim, num_jobs):
     label_to_dir = create_file_structure(path=output_dir,
                                          folders_names=folders_names)
 
+    TOTAL_VIDEOS = links_df.shape[0]
     # Download files by links from dataframe
     Parallel(n_jobs=num_jobs)(delayed(download_clip)(
-            row, label_to_dir, trim) for _, row in links_df.iterrows())
+            row, label_to_dir, trim, count) for count, row in links_df.iterrows())
 
     # Clean tmp directory
     shutil.rmtree(label_to_dir['tmp'])
